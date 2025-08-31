@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saad's Gallery - Photography</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #ffffff; color: #1a1a1a; font-family: 'Old Standard TT', serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+        .nav-active { border-bottom: 2px solid #000000; color: #000000; font-weight: 700; }
+        .category-tile { position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); background-size: cover; background-position: center; }
+        .category-tile:hover { transform: scale(1.02); }
+        .category-tile::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); transition: background-color 0.3s ease; }
+        .category-tile:hover::before { background-color: rgba(0, 0, 0, 0.3); }
+        .tile-text { position: relative; z-index: 10; text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6); }
+        .gemini-button { transition: all 0.2s ease-in-out; }
+        .gemini-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .gemini-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .curator-note { border-left: 3px solid #000; background-color: #f9f9f9; }
+    </style>
+</head>
+<body class="antialiased">
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div><a href="index.html" class="flex items-center py-4 px-2"><span class="font-bold text-xl text-black font-serif">Saad's Gallery</span></a></div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="index.html" class="py-4 px-3 text-gray-700 hover:text-black">Home</a>
+                    <a href="photography.html" class="py-4 px-3 text-gray-700 hover:text-black nav-active">Photography</a>
+                    <a href="poems.html" class="py-4 px-3 text-gray-700 hover:text-black">Poems</a>
+                    <a href="anecdotes.html" class="py-4 px-3 text-gray-700 hover:text-black">Anecdotes</a>
+                    <a href="writings.html" class="py-4 px-3 text-gray-700 hover:text-black">Writings</a>
+                </div>
+                <div class="md:hidden flex items-center"><button class="mobile-menu-button p-4"><svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg></button></div>
+            </div>
+        </div>
+        <div class="mobile-menu hidden md:hidden bg-white border-t border-gray-200"><a href="index.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Home</a><a href="photography.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Photography</a><a href="poems.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Poems</a><a href="anecdotes.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Anecdotes</a><a href="writings.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Writings</a></div>
+    </nav>
+
+    <main class="w-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-px h-[calc(100vh-180px)] md:h-[calc(100vh-61px)] bg-gray-200">
+            <a href="photography/colour.html" class="category-tile flex items-center justify-center" style="background-image: url('https://placehold.co/800x600/3d405b/FFFFFF?text=Colour+Palette');"><h2 class="tile-text text-white text-5xl font-bold tracking-wider">Colour</h2></a>
+            <a href="photography/genre.html" class="category-tile flex items-center justify-center" style="background-image: url('https://placehold.co/800x600/81b29a/FFFFFF?text=City+Street');"><h2 class="tile-text text-white text-5xl font-bold tracking-wider">Genre</h2></a>
+        </div>
+        <section id="gemini-curator" class="py-12 bg-white">
+            <div class="max-w-3xl mx-auto px-4 text-center">
+                <h3 class="text-3xl font-bold mb-4">A Note from the Curator</h3>
+                <p class="mb-6 text-gray-600">Click the button below to get a unique, AI-generated thought on the art of photography, crafted just for this moment.</p>
+                <button id="curator-button" class="gemini-button bg-black text-white font-bold py-3 px-8 text-lg">✨ Ask the AI Curator</button>
+                <div id="curator-response" class="mt-8 text-left hidden"><div id="curator-note-box" class="curator-note p-6"><p id="curator-text" class="text-lg italic leading-relaxed"></p></div></div>
+                <div id="loading-spinner" class="mt-8 hidden"><svg class="animate-spin h-8 w-8 text-black mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.querySelector('button.mobile-menu-button');
+            const menu = document.querySelector('.mobile-menu');
+            btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+            const curatorButton = document.getElementById('curator-button'), curatorResponseDiv = document.getElementById('curator-response'), curatorTextElement = document.getElementById('curator-text'), loadingSpinner = document.getElementById('loading-spinner');
+            curatorButton.addEventListener('click', async function getCuratorNote() {
+                curatorButton.disabled = true; curatorResponseDiv.classList.add('hidden'); loadingSpinner.classList.remove('hidden');
+                const systemPrompt = "You are an eloquent and insightful art curator with a deep appreciation for photography. Your tone is vintage, literary, and slightly philosophical.", userQuery = "Write a short, thought-provoking paragraph (around 50-70 words) about the relationship between 'Colour' and 'Genre' in the art of photography. Consider how one influences the other in creating a compelling visual narrative.", apiKey = "", apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`, payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
+                try {
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json(), text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) { curatorTextElement.textContent = text; curatorResponseDiv.classList.remove('hidden'); } else throw new Error("No content received from API.");
+                } catch (error) { console.error("Error fetching curator's note:", error); curatorTextElement.textContent = "The curator is currently unavailable. Please try again shortly."; curatorResponseDiv.classList.remove('hidden'); } finally { loadingSpinner.classList.add('hidden'); curatorButton.disabled = false; }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 
+      IMPORTANT: CHANGE THIS TITLE! 
+      This should be specific to the gallery, e.g., "Saad's Gallery - Genre: Nature"
+    -->
+    <title>Saad's Gallery - Gallery Template</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Old+Standard+TT:wght@400;700&display.swap" rel="stylesheet">
+
+    <style>
+        body { background-color: #ffffff; color: #1a1a1a; font-family: 'Old Standard TT', serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+        .nav-active { border-bottom: 2px solid #000000; color: #000000; font-weight: 700; }
+        
+        /* * MASONRY GRID STYLING
+         * We use CSS Grid to create the dynamic layout.
+         * The grid automatically adjusts the number of columns based on screen width.
+        */
+        #photo-grid {
+            display: grid;
+            /* Thin separation between tiles */
+            gap: 4px; 
+            /* Define column layout for responsiveness */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            /* Define a base row height */
+            grid-auto-rows: 250px;
+        }
+
+        /* Classes to control tile size */
+        .photo-item.wide {
+            grid-column: span 2;
+        }
+        .photo-item.tall {
+            grid-row: span 2;
+        }
+        /* A tile that is both wide and tall */
+        .photo-item.tall.wide {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            /* Sharp corners */
+            border-radius: 0;
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Lightbox Modal Styling */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            /* Dim and blur effect */
+            backdrop-filter: blur(8px);
+        }
+        .lightbox.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox-content {
+            position: relative;
+            width: 90%;
+            height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 1rem;
+            z-index: 102;
+        }
+        /* Navigation Arrows */
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            padding: 1rem 2rem;
+            z-index: 101;
+            user-select: none; /* Prevents text selection on double click */
+            transition: background 0.2s;
+        }
+        .lightbox-nav:hover {
+            background: rgba(0,0,0,0.3);
+        }
+        .lightbox-prev {
+            left: 0;
+        }
+        .lightbox-next {
+            right: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- NAVIGATION (Paths are '../../') -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div><a href="../../index.html" class="flex items-center py-4 px-2"><span class="font-bold text-xl text-black font-serif">Saad's Gallery</span></a></div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="../../index.html" class="py-4 px-3 text-gray-700 hover:text-black">Home</a>
+                    <a href="../../photography.html" class="py-4 px-3 text-gray-700 hover:text-black nav-active">Photography</a>
+                    <a href="../../poems.html" class="py-4 px-3 text-gray-700 hover:text-black">Poems</a>
+                    <a href="../../anecdotes.html" class="py-4 px-3 text-gray-700 hover:text-black">Anecdotes</a>
+                    <a href="../../writings.html" class="py-4 px-3 text-gray-700 hover:text-black">Writings</a>
+                </div>
+                <div class="md:hidden flex items-center"><button class="mobile-menu-button p-4"><svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg></button></div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div class="mobile-menu hidden md:hidden"><a href="../../index.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Home</a><a href="../../photography.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Photography</a><a href="../../poems.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Poems</a><a href="../../anecdotes.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Anecdotes</a><a href="../../writings.html" class="block py-2 px-4 text-sm hover:bg-gray-100">Writings</a></div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-none mx-auto p-2 sm:p-4">
+        <!-- HEADER (CHANGE THIS) -->
+        <h1 class="text-4xl md:text-5xl font-bold text-center text-black my-8">
+            Genre: <span class="text-gray-600">Nature</span>
+        </h1>
+
+        <!-- MASONRY PHOTO GRID -->
+        <div id="photo-grid">
+            
+            <!-- PHOTO 1 (Standard) -->
+            <div class="photo-item">
+                <img src="https://placehold.co/600x400/a5d6a7/FFFFFF?text=Nature+1" alt="Nature 1">
+            </div>
+
+            <!-- PHOTO 2 (Tall) -->
+            <div class="photo-item tall">
+                <img src="https://placehold.co/400x800/81c784/FFFFFF?text=Nature+2" alt="Nature 2">
+            </div>
+
+            <!-- PHOTO 3 (Standard) -->
+            <div class="photo-item">
+                <img src="https://placehold.co/600x400/66bb6a/FFFFFF?text=Nature+3" alt="Nature 3">
+            </div>
+
+            <!-- PHOTO 4 (Wide) -->
+            <div class="photo-item wide">
+                <img src="https://placehold.co/800x400/4caf50/FFFFFF?text=Nature+4" alt="Nature 4">
+            </div>
+
+             <!-- PHOTO 5 (Standard) -->
+            <div class="photo-item">
+                <img src="https://placehold.co/600x400/43a047/FFFFFF?text=Nature+5" alt="Nature 5">
+            </div>
+
+            <!-- PHOTO 6 (Tall and Wide - Large Feature) -->
+            <div class="photo-item tall wide">
+                <img src="https://placehold.co/800x800/388e3c/FFFFFF?text=Nature+6" alt="Nature 6">
+            </div>
+
+            <!-- PHOTO 7 (Standard) -->
+            <div class="photo-item">
+                <img src="https://placehold.co/600x400/2e7d32/FFFFFF?text=Nature+7" alt="Nature 7">
+            </div>
+
+            <!-- PHOTO 8 (Wide) -->
+            <div class="photo-item wide">
+                <img src="https://placehold.co/800x400/1b5e20/FFFFFF?text=Nature+8" alt="Nature 8">
+            </div>
+
+            <!-- Add more photo items here -->
+
+        </div>
+    </main>
+    
+    <footer class="bg-gray-50 mt-12 py-6"><div class="max-w-6xl mx-auto text-center text-gray-600"><p>&copy; <span id="year"></span> Saad's Gallery. All Rights Reserved.</p></div></footer>
+
+    <!-- LIGHTBOX MODAL CONTAINER -->
+    <div id="lightbox" class="lightbox">
+        <span id="lightbox-close" class="lightbox-close">&times;</span>
+        <span id="lightbox-prev" class="lightbox-nav lightbox-prev">&#10094;</span>
+        <span id="lightbox-next" class="lightbox-nav lightbox-next">&#10095;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full-size view">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Standard Menu and Footer Logic ---
+            const btn = document.querySelector('button.mobile-menu-button');
+            const menu = document.querySelector('.mobile-menu');
+            btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // --- ADVANCED LIGHTBOX LOGIC ---
+            const lightbox = document.getElementById('lightbox');
+            if(lightbox) {
+                const photoItems = document.querySelectorAll('.photo-item');
+                const lightboxImg = document.getElementById('lightbox-img');
+                const lightboxClose = document.getElementById('lightbox-close');
+                const lightboxPrev = document.getElementById('lightbox-prev');
+                const lightboxNext = document.getElementById('lightbox-next');
+
+                let currentIndex = 0;
+                const photos = Array.from(photoItems).map(item => item.querySelector('img').src);
+
+                function showLightbox(index) {
+                    if (index < 0 || index >= photos.length) return;
+                    currentIndex = index;
+                    lightboxImg.src = photos[currentIndex];
+                    lightbox.classList.add('show');
+                }
+
+                function closeLightbox() {
+                    lightbox.classList.remove('show');
+                }
+
+                function showNext() {
+                    const nextIndex = (currentIndex + 1) % photos.length;
+                    showLightbox(nextIndex);
+                }
+
+                function showPrev() {
+                    const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
+                    showLightbox(prevIndex);
+                }
+
+                photoItems.forEach((item, index) => {
+                    item.addEventListener('click', () => showLightbox(index));
+                });
+
+                lightboxClose.addEventListener('click', closeLightbox);
+                lightboxNext.addEventListener('click', showNext);
+                lightboxPrev.addEventListener('click', showPrev);
+
+                // Close lightbox when clicking on the background
+                lightbox.addEventListener('click', (e) => {
+                    if (e.target === lightbox) {
+                        closeLightbox();
+                    }
+                });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (lightbox.classList.contains('show')) {
+                        if (e.key === 'ArrowRight') showNext();
+                        if (e.key === 'ArrowLeft') showPrev();
+                        if (e.key === 'Escape') closeLightbox();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
